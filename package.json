@@ -4,7 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "http-server src",
+    "start": "concurrently \"npm run server\" \"npm run build-watch\" \"npm run watch-index-html\" ",
+    "server": "http-server dist -c-1",
+    "build": "webpack --config webpack.config.js",
+    "watch-index-html": "nodemon --watch src/index.html --exec \"npm run index-html\" ",
+    "index-html": "cp src/index.html dist/index.html",
+    "build-watch": "webpack --config webpack.config.js --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,7 +23,12 @@
   },
   "homepage": "https://github.com/Mariusz-v7/HexMap#readme",
   "devDependencies": {
-    "http-server": "^0.11.1"
+    "concurrently": "^3.5.1",
+    "http-server": "^0.11.1",
+    "nodemon": "^1.14.12",
+    "ts-loader": "^3.5.0",
+    "typescript": "^2.7.1",
+    "webpack": "^3.11.0"
   },
   "dependencies": {
     "d3": "^4.13.0"

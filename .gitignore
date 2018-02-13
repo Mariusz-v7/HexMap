@@ -1,4 +1,6 @@
 node_modules/
+dist
+cp.exe.stackdump
 
 # Compiled class file
 *.class
