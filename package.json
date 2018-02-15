@@ -24,6 +24,7 @@
   "homepage": "https://github.com/Mariusz-v7/HexMap#readme",
   "devDependencies": {
     "@types/d3": "^5.0.0",
+    "@types/topojson": "^3.0.2",
     "concurrently": "^3.5.1",
     "http-server": "^0.11.1",
     "nodemon": "^1.14.12",
@@ -33,6 +34,8 @@
   },
   "dependencies": {
     "@webcomponents/custom-elements": "^1.0.8",
-    "d3": "^4.13.0"
+    "d3": "^4.13.0",
+    "geojson": "^0.5.0",
+    "topojson": "^3.0.2"
   }
 }
