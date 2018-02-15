@@ -2,7 +2,7 @@ import { select, Selection, BaseType } from 'd3-selection';
 import { geoPath, geoProjection, GeoStream, GeoStreamWrapper } from 'd3-geo';
 import { feature } from 'topojson';
 import { Feature } from 'geojson';
-import { hexStream } from './stream-wrapper';
+import { HexProjection } from './hex-projection';
 
 export class MapViewPort extends HTMLElement {
     private shadow: ShadowRoot;
@@ -10,9 +10,7 @@ export class MapViewPort extends HTMLElement {
     private d3root: Selection<BaseType, any, any, any>;
     private width = 0;
     private height = 0;
-    private streamWrapper: GeoStreamWrapper = {
-        stream: hexStream
-    };
+    private streamWrapper = new HexProjection();
 
     constructor() {
         super();
