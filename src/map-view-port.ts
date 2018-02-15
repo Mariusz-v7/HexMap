@@ -2,6 +2,7 @@ import { select, Selection, BaseType } from 'd3-selection';
 import { geoPath, geoProjection, GeoStream, GeoStreamWrapper } from 'd3-geo';
 import { feature } from 'topojson';
 import { Feature } from 'geojson';
+import { hexStream } from './stream-wrapper';
 
 export class MapViewPort extends HTMLElement {
     private shadow: ShadowRoot;
@@ -10,7 +11,7 @@ export class MapViewPort extends HTMLElement {
     private width = 0;
     private height = 0;
     private streamWrapper: GeoStreamWrapper = {
-        stream: this.stream
+        stream: hexStream
     };
 
     constructor() {
@@ -79,17 +80,6 @@ export class MapViewPort extends HTMLElement {
 
                 return path(geoJsonFeature, d);
             });
-
-    }
-
-    private stream(stream: GeoStream): GeoStream {
-        return {
-            point: (x: number, y: number) => stream.point(x, y),
-            lineStart: () => stream.lineStart(),
-            lineEnd: () => stream.lineEnd(),
-            polygonStart: () => stream.polygonStart(),
-            polygonEnd: () => stream.polygonEnd()
-        };
 
     }
 
