@@ -3,6 +3,7 @@ import { geoPath, geoProjection, GeoStream, GeoStreamWrapper } from 'd3-geo';
 import { feature } from 'topojson';
 import { Feature } from 'geojson';
 import { HexProjection } from './hex-projection';
+import { Topology } from './topology';
 
 export class MapViewPort extends HTMLElement {
     private shadow: ShadowRoot;
@@ -33,31 +34,7 @@ export class MapViewPort extends HTMLElement {
     }
 
     private render() {
-        const topology = {
-            transform: {
-                scale: [100, 100],
-                translate: [50, 50]
-            },
-            arcs: [
-                [[0, 0], [1, 0]],
-                [[1, 0], [0, 1]],
-                [[1, 1], [-1, 0]],
-                [[0, 1], [0, -1]],
-            ],
-            objects: {
-                tiles: {
-                    type: 'GeometryCollection',
-                    geometries: [
-                        {
-                            arcs: [
-                                [0, 1, 2, 3]
-                            ],
-                            type: 'Polygon'
-                        }
-                    ]
-                }
-            }
-        };
+        const topology = new Topology();
 
         const path = geoPath(this.streamWrapper);
 
