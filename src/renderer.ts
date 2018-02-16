@@ -18,6 +18,7 @@ export class Renderer {
             .data(this.topology.objects.tiles.geometries)
             .enter()
             .append('path')
+            .attr('class', 'tile')
             .attr('d', d => this.calculatePath(d));
     }
 
