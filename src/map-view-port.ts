@@ -1,9 +1,6 @@
 import { select, Selection, BaseType } from 'd3-selection';
-import { geoPath, geoProjection, GeoStream, GeoStreamWrapper } from 'd3-geo';
-import { feature } from 'topojson';
-import { Feature } from 'geojson';
-import { HexProjection } from './hex-projection';
 import { Topology } from './topology';
+import { Renderer } from './renderer';
 
 export class MapViewPort extends HTMLElement {
     private shadow: ShadowRoot;
@@ -11,7 +8,7 @@ export class MapViewPort extends HTMLElement {
     private d3root: Selection<BaseType, any, any, any>;
     private width = 0;
     private height = 0;
-    private streamWrapper = new HexProjection();
+    private renderer: Renderer;
 
     constructor() {
         super();
@@ -30,32 +27,8 @@ export class MapViewPort extends HTMLElement {
             .attr('width', this.width)
             .attr('height', this.height);
 
-        this.render();
-    }
-
-    private render() {
-        const topology = new Topology();
-
-        const path = geoPath(this.streamWrapper);
-
-        this.d3root.append('g')
-            .selectAll('path')
-            .data(topology.objects.tiles.geometries)
-            .enter()
-            .append('path')
-            .attr('d', d => {
-
-                const conversion: any = feature(topology, d);
-
-                const geoJsonFeature: Feature<any, any> = {
-                    geometry: conversion.geometry,
-                    properties: conversion.properties,
-                    type: 'Feature'
-                };
-
-                return path(geoJsonFeature, d);
-            });
-
+        this.renderer = new Renderer(this.d3root, new Topology());
+        this.renderer.render();
     }
 
 }
