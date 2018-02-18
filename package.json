@@ -29,6 +29,7 @@
     "css-loader": "^0.28.9",
     "http-server": "^0.11.1",
     "nodemon": "^1.14.12",
+    "raw-loader": "^0.5.1",
     "style-loader": "^0.20.2",
     "ts-loader": "^3.5.0",
     "typescript": "^2.7.1",

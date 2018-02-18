@@ -1,7 +1,7 @@
 import { select, Selection, BaseType } from 'd3-selection';
 import { Topology } from './topology';
 import { Renderer } from './renderer';
-import './styles';
+import styles from './styles.css';
 
 export class MapViewPort extends HTMLElement {
     private shadow: ShadowRoot;
@@ -17,6 +17,10 @@ export class MapViewPort extends HTMLElement {
         this.shadow = this.attachShadow({ mode: 'open' });
         this.container = document.createElement('div');
 
+        const style = document.createElement('style');
+        style.textContent = styles;
+
+        this.shadow.appendChild(style);
         this.shadow.appendChild(this.container);
     }
 
