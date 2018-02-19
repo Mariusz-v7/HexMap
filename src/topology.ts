@@ -1,3 +1,5 @@
+import { Tile } from "./tile";
+
 export class Topology {
 
     get transform() {
@@ -17,17 +19,20 @@ export class Topology {
     }
 
     get objects() {
+        const tiles: Tile[] = [
+            {
+                arcs: [
+                    [0, 1, 2, 3]
+                ],
+                type: 'Polygon',
+                data: 'test'
+            }
+        ];
+
         return {
             tiles: {
                 type: 'GeometryCollection',
-                geometries: [
-                    {
-                        arcs: [
-                            [0, 1, 2, 3]
-                        ],
-                        type: 'Polygon'
-                    }
-                ]
+                geometries: tiles
             }
         };
     }

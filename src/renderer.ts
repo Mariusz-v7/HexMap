@@ -4,6 +4,7 @@ import { feature } from 'topojson';
 import { Feature } from 'geojson';
 import { HexProjection } from './hex-projection';
 import { Topology } from './topology';
+import { Tile } from './tile';
 
 export class Renderer {
     private path: GeoPath<any, any>;
@@ -19,11 +20,17 @@ export class Renderer {
             .enter()
             .append('path')
             .attr('class', 'tile')
-            .attr('d', d => this.calculatePath(d));
+            .attr('d', tile => this.calculatePath(tile))
+            .on('mousemove', tile => this.mousemove(tile))
+            ;
     }
 
-    private calculatePath(d: { arcs: number[][], type: string }) {
-        const conversion: any = feature(this.topology, d);
+    private mousemove(tile: Tile) {
+        console.log(tile); // TODO
+    }
+
+    private calculatePath(tile: Tile) {
+        const conversion: any = feature(this.topology, tile);
 
         const geoJsonFeature: Feature<any, any> = {
             geometry: conversion.geometry,
@@ -31,6 +38,6 @@ export class Renderer {
             type: 'Feature'
         };
 
-        return this.path(geoJsonFeature, d);
+        return this.path(geoJsonFeature, tile);
     }
 }
