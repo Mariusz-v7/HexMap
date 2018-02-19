@@ -26,7 +26,7 @@ export class Renderer {
     }
 
     private mousemove(tile: Tile) {
-        console.log(tile); // TODO
+        tile.onMouseMove();
     }
 
     private calculatePath(tile: Tile) {

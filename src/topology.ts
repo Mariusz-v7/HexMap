@@ -20,13 +20,7 @@ export class Topology {
 
     get objects() {
         const tiles: Tile[] = [
-            {
-                arcs: [
-                    [0, 1, 2, 3]
-                ],
-                type: 'Polygon',
-                data: 'test'
-            }
+            new Tile([[0, 1, 2, 3]])
         ];
 
         return {
