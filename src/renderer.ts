@@ -15,6 +15,8 @@ export class Renderer {
     }
 
     render() {
+        this.mapContainer.selectAll('path').remove(); // TODO: this may be inefficient...
+
         this.mapContainer
             .selectAll('path')
             .data(this.topology.objects.tiles.geometries)

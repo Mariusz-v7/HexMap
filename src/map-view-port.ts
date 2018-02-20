@@ -40,7 +40,7 @@ export class MapViewPort extends HTMLElement {
         this.renderer = new Renderer(this.d3root, mapContainer, topology);
         this.renderer.render();
 
-        const mapDrag = new MapDrag(mapContainer);
+        const mapDrag = new MapDrag(mapContainer, topology, this.renderer);
     }
 
 }

@@ -1,11 +1,17 @@
 import { Tile } from "./tile";
 
 export class Topology {
+    private position = [0, 0];
+
+    move(x: number, y: number) {
+        this.position[0] += x;
+        this.position[1] += y;
+    }
 
     get transform() {
         return {
             scale: [100, 100],
-            translate: [50, 50]
+            translate: this.position
         };
     }
 
