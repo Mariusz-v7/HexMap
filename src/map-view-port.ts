@@ -1,6 +1,7 @@
 import { select, Selection, BaseType } from 'd3-selection';
 import { Topology } from './topology';
 import { Renderer } from './renderer';
+import { MapDrag } from './map-drag';
 import styles from './styles.css';
 
 export class MapViewPort extends HTMLElement {
@@ -32,8 +33,14 @@ export class MapViewPort extends HTMLElement {
             .attr('width', this.width)
             .attr('height', this.height);
 
-        this.renderer = new Renderer(this.d3root, new Topology());
+        const mapContainer = this.d3root.append('g');
+
+        const topology = new Topology();
+
+        this.renderer = new Renderer(this.d3root, mapContainer, topology);
         this.renderer.render();
+
+        const mapDrag = new MapDrag(mapContainer);
     }
 
 }

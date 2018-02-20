@@ -9,12 +9,13 @@ import { Tile } from './tile';
 export class Renderer {
     private path: GeoPath<any, any>;
 
-    constructor(private d3root: Selection<BaseType, any, any, any>, private topology: Topology) {
+    constructor(private d3root: Selection<BaseType, any, any, any>, private mapContainer: Selection<BaseType, any, any, any>,
+        private topology: Topology) {
         this.path = geoPath(new HexProjection());
     }
 
     render() {
-        this.d3root.append('g')
+        this.mapContainer
             .selectAll('path')
             .data(this.topology.objects.tiles.geometries)
             .enter()
