@@ -4,12 +4,17 @@ import { Topology } from './topology';
 import { Renderer } from './renderer';
 import { zoom } from 'd3-zoom';
 
-export class MapDrag {
+/**
+ * This is not related to MVC controller... ;)
+ */
+export class MapController {
     constructor(private mapContainer: Selection<BaseType, any, any, any>,
-        private topology: Topology, private renderer: Renderer) {
+        private topology: Topology, private renderer: Renderer,
+        private width: number, private height: number) {
 
         const zoomDef = zoom()
-            .scaleExtent([1 / 2, 8])
+            .scaleExtent([0, 0])
+            .translateExtent([[0, 0], [this.width, this.height]]) // todo: this does not work
             .on('zoom', () => this.onZoom());
 
         this.mapContainer.call(zoomDef);
