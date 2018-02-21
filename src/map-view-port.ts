@@ -3,6 +3,7 @@ import { Topology } from './topology';
 import { Renderer } from './renderer';
 import { MapController } from './map-controller';
 import styles from './styles.css';
+import { MapFragmentController } from './map-fragment/map-fragment-controller';
 
 export class MapViewPort extends HTMLElement {
     private shadow: ShadowRoot;
@@ -41,6 +42,10 @@ export class MapViewPort extends HTMLElement {
         this.renderer.render();
 
         const mapDrag = new MapController(this.d3root, topology, this.renderer, this.width, this.height);
+
+        //tmp:
+
+        const mapFragmentController = new MapFragmentController();
     }
 
 }
