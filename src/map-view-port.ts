@@ -27,25 +27,25 @@ export class MapViewPort extends HTMLElement {
     }
 
     private connectedCallback() {
-        this.height = parseInt(this.getAttribute('height') || '0', 10);
-        this.width = parseInt(this.getAttribute('width') || '0', 10);
+        // this.height = parseInt(this.getAttribute('height') || '0', 10);
+        // this.width = parseInt(this.getAttribute('width') || '0', 10);
 
         this.d3root = select(this.container).append('svg')
             .attr('width', this.width)
             .attr('height', this.height);
 
-        const mapContainer = this.d3root.append('g');
+        // const mapContainer = this.d3root.append('g');
 
-        const topology = new Topology();
+        // const topology = new Topology();
 
-        this.renderer = new Renderer(this.d3root, mapContainer, topology);
-        this.renderer.render();
+        // this.renderer = new Renderer(this.d3root, mapContainer, topology);
+        // this.renderer.render();
 
-        const mapDrag = new MapController(this.d3root, topology, this.renderer, this.width, this.height);
+        // const mapDrag = new MapController(this.d3root, topology, this.renderer, this.width, this.height);
 
         //tmp:
 
-        const mapFragmentController = new MapFragmentController();
+        const mapFragmentController = new MapFragmentController(select(this.container));
     }
 
 }
