@@ -11,7 +11,8 @@ export class MapFragmentTile {
     constructor(private root: Selection<BaseType, any, any, any>) {
 
         var pi = Math.PI,
-            tau = 2 * pi;
+            tau = 2 * pi,
+            tileSize = 128;
 
         var width = 960,
             height = 800;
@@ -20,14 +21,14 @@ export class MapFragmentTile {
             .size([width, height]);
 
         var zooom = zoom()
-            .scaleExtent([1 << 10, 1 << 13])
+            // .scaleExtent([1 << 10, 1 << 11])
+            .scaleExtent([tileSize, tileSize * 10])
             .on("zoom", zoomed);
 
         var map = this.root.append("div")
             .attr("class", "map")
             .style("width", width + "px")
-            .style("height", height + "px")
-            .on("mousemove", mousemoved);
+            .style("height", height + "px");
 
         var layer = map.append("div")
             .attr("class", "layer");
@@ -36,7 +37,7 @@ export class MapFragmentTile {
         map.call(zooom)
             .call(zooom.transform, zoomIdentity
                 .translate(width / 2, height / 2)
-                .scale(1 << 10)
+                .scale(tileSize * 2)
             );
 
         function zoomed() {
@@ -60,8 +61,10 @@ export class MapFragmentTile {
 
             image.enter().append("svg")
                 .attr("class", "tile")
-                .style("left", function (d) { return d.x * 256 + "px"; })
-                .style("top", function (d) { return d.y * 256 + "px"; })
+                .style('width', `${tileSize}px`)
+                .style('height', `${tileSize}px`)
+                .style("left", function (d) { return d.x * tileSize + "px"; })
+                .style("top", function (d) { return d.y * tileSize + "px"; })
                 .each(function (d) {
                     // console.log(d);
 
@@ -91,24 +94,13 @@ export class MapFragmentTile {
         }
 
         function stringify(scale, translate) {
-            var k = scale / 256, r = scale % 1 ? Number : Math.round;
+            var k = scale / tileSize, r = scale % 1 ? Number : Math.round;
             return "matrix3d(" + [
                 k, 0, 0, 0, 0,
                 k, 0, 0, 0, 0,
                 k, 0, r(translate[0] * scale), r(translate[1] * scale), 0, 1
             ] + ")";
         }
-
-        function mousemoved() {
-            // info.text(formatLocation(projection.invert(d3.mouse(this)), d3.zoomTransform(this).k));
-        }
-
-        function formatLocation(p, k) {
-            // var format = d3.format("." + Math.floor(Math.log(k) / 2 - 2) + "f");
-            // return (p[1] < 0 ? format(-p[1]) + "°S" : format(p[1]) + "°N") + " "
-            //     + (p[0] < 0 ? format(-p[0]) + "°W" : format(p[0]) + "°E");
-        }
-
 
     }
 
