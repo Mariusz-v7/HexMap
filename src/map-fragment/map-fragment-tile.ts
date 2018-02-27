@@ -16,19 +16,11 @@ export class MapFragmentTile {
         var width = 960,
             height = 800;
 
-        // Initialize the projection to fit the world in a 1×1 square centered at the origin.
-        var projection = geoMercator()
-        .scale(1 / tau)
-        .translate([0, 0]);
-
-        var path = geoPath()
-            .projection(projection);
-
         var tilee = tile()
             .size([width, height]);
 
         var zooom = zoom()
-            .scaleExtent([1 << 20, 1 << 23])
+            .scaleExtent([1 << 10, 1 << 13])
             .on("zoom", zoomed);
 
         var map = this.root.append("div")
@@ -50,14 +42,12 @@ export class MapFragmentTile {
         function zoomed() {
             var transform = event.transform;
 
+            console.log(transform)
+
             var tiles = tilee
                 .scale(transform.k)
                 .translate([transform.x, transform.y])
                 ();
-
-            projection
-                .scale(transform.k / tau)
-                .translate([transform.x, transform.y]);
 
             var image = layer
                 .style("transform", stringify(tiles.scale, tiles.translate))
@@ -73,7 +63,7 @@ export class MapFragmentTile {
                 .style("left", function (d) { return d.x * 256 + "px"; })
                 .style("top", function (d) { return d.y * 256 + "px"; })
                 .each(function (d) {
-                    console.log(d);
+                    // console.log(d);
 
                     const text = select(this).append('text');
                     text.text(`${d.x} x ${d.y}, z: ${d.z}`)
@@ -103,8 +93,8 @@ export class MapFragmentTile {
         function stringify(scale, translate) {
             var k = scale / 256, r = scale % 1 ? Number : Math.round;
             return "matrix3d(" + [
-                k, 0, 0, 0, 0, 
-                k, 0, 0, 0, 0, 
+                k, 0, 0, 0, 0,
+                k, 0, 0, 0, 0,
                 k, 0, r(translate[0] * scale), r(translate[1] * scale), 0, 1
             ] + ")";
         }
