@@ -1,6 +1,7 @@
 import { MapFragmentTile } from './map-fragment-tile';
 import { Selection, BaseType, select, event } from 'd3-selection';
 import { zoom } from 'd3-zoom';
+import { MapTile } from './map-tile';
 
 export class MapFragmentController {
     private d3Root: Selection<HTMLElement, any, any, any>;
@@ -15,7 +16,7 @@ export class MapFragmentController {
             .scaleExtent([1, 1])
             .on('zoom', () => {
                 this.svg.selectAll('g')
-                    .attr('transform', `translate(${event.transform.x}, ${event.transform.y})`)
+                    .attr('transform', (d: MapTile) => `translate(${d.x + event.transform.x}, ${d.y + event.transform.y})`)
             });
 
         this.svg = this.d3Root.append('svg')
@@ -24,17 +25,29 @@ export class MapFragmentController {
             .call(zoomDef);
 
         this.svg
-            .selectAll('circle')
-            .data([{ x: 25, y: 25, r: 10 }, { x: 50, y: 50, r: 20 }])
+            .selectAll('g')
+            .data(this.generateMapTiles())
             .enter()
             .append('g')
-            .append('circle')
-            .attr('cx', d => d.x)
-            .attr('cy', d => d.y)
-            .attr('r', d => d.r)
-            ;
+            .attr('transform', d => `translate(${d.x}, ${d.y})`)
+            .each(function (d) {
+                new MapFragmentTile(this, d)
+            });
 
         // todo: compute amount of tiles and their location
         // todo: load and unload tiles dynamically when user drags the map
+    }
+
+    private generateMapTiles(): MapTile[] {
+        return [
+            {
+                x: 0,
+                y: 0,//width: 99
+            },
+            {
+                x: 100,
+                y: 0,
+            }
+        ];
     }
 }
