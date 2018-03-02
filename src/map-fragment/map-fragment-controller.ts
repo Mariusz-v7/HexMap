@@ -14,9 +14,8 @@ export class MapFragmentController {
         const zoomDef = zoom()
             .scaleExtent([1, 1])
             .on('zoom', () => {
-                this.svg.selectAll('circle')
+                this.svg.selectAll('g')
                     .attr('transform', `translate(${event.transform.x}, ${event.transform.y})`)
-                console.log(event.transform)
             });
 
         this.svg = this.d3Root.append('svg')
@@ -28,6 +27,7 @@ export class MapFragmentController {
             .selectAll('circle')
             .data([{ x: 25, y: 25, r: 10 }, { x: 50, y: 50, r: 20 }])
             .enter()
+            .append('g')
             .append('circle')
             .attr('cx', d => d.x)
             .attr('cy', d => d.y)
