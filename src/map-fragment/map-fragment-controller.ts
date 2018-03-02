@@ -14,6 +14,8 @@ export class MapFragmentController {
         const zoomDef = zoom()
             .scaleExtent([1, 1])
             .on('zoom', () => {
+                this.svg.selectAll('circle')
+                    .attr('transform', `translate(${event.transform.x}, ${event.transform.y})`)
                 console.log(event.transform)
             });
 
@@ -21,6 +23,16 @@ export class MapFragmentController {
             .attr('width', width)
             .attr('height', height)
             .call(zoomDef);
+
+        this.svg
+            .selectAll('circle')
+            .data([{ x: 25, y: 25, r: 10 }, { x: 50, y: 50, r: 20 }])
+            .enter()
+            .append('circle')
+            .attr('cx', d => d.x)
+            .attr('cy', d => d.y)
+            .attr('r', d => d.r)
+            ;
 
         // todo: compute amount of tiles and their location
         // todo: load and unload tiles dynamically when user drags the map
