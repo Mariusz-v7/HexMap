@@ -5,7 +5,7 @@ import { MapTile } from './map-tile';
 
 export class MapFragmentController {
     private d3Root: Selection<HTMLElement, any, any, any>;
-    private svg: Selection<BaseType, MapTile, any, any>;
+    private svg: Selection<BaseType, any, any, any>;
     private tileSize = 100;
     private width = 0;
     private height = 0;
@@ -20,27 +20,47 @@ export class MapFragmentController {
         const zoomDef = zoom()
             .scaleExtent([1, 1])
             .on('zoom', () => {
-                const visibleTiles: MapTile[] = [];
+                let visibleTiles: MapFragmentTile[] = [];
+                let invisibleTiles: MapFragmentTile[] = [];
+
                 this.svg.selectAll('g')
                     .attr('transform', this.computeTranslate)
-                    .filter((d: MapTile) => this.filterPosition(d, event.transform))
-                    .each((d: MapTile) => visibleTiles.push(d));
+                    .filter((d: MapFragmentTile) => this.filterPosition(d, event.transform))
+                    .each((d: MapFragmentTile) => visibleTiles.push(d));
 
-                // TODO: create missing tiles
+                this.svg.selectAll('g')
+                    .attr('transform', this.computeTranslate)
+                    .filter((d: MapFragmentTile) => !this.filterPosition(d, event.transform))
+                    .each((d: MapFragmentTile) => invisibleTiles.push(d));
+
+                visibleTiles = this.generateMapTiles(visibleTiles);
 
                 const tiles = this.svg.selectAll('g')
                     .data(visibleTiles);
 
                 tiles.exit()
-                    .each((d: MapTile) => d.fragment.destroy())
+                    .each((d: MapFragmentTile) => d.destroy())
                     .remove();
+
+                tiles.merge(tiles)
+                    .each(function (d, y, z) {
+                        console.log(d)
+                        console.log(y)
+                        console.log(this)
+                        console.log(z)
+                        if (!d.isBound) {
+                            d.init(this);
+                        }
+                    });
 
                 tiles.enter()
                     .append('g')
                     .attr('transform', this.computeTranslate)
                     .each(function (d) {
-                        d.fragment = new MapFragmentTile(this, d, tileSize - 1);
+                        d.init(this);
                     });
+
+                invisibleTiles.forEach(tile => tile.destroy());
             });
 
         this.svg = this.d3Root.append('svg')
@@ -50,12 +70,12 @@ export class MapFragmentController {
 
         this.svg
             .selectAll('g')
-            .data(this.generateMapTiles())
+            .data(this.generateMapTiles([]))
             .enter()
             .append('g')
             .attr('transform', this.computeTranslate)
             .each(function (d) {
-                d.fragment = new MapFragmentTile(this, d, tileSize - 1)
+                d.init(this);
             });
     }
 
@@ -84,15 +104,45 @@ export class MapFragmentController {
         return true;
     }
 
-    private generateMapTiles(): MapTile[] {
+    private generateMapTiles(tiles: MapFragmentTile[]): MapFragmentTile[] {
         const amountHorizontal = Math.ceil(this.width / this.tileSize);
         const amountVertical = Math.ceil(this.height / this.tileSize);
 
-        const tiles: MapTile[] = [];
+        tiles = [...tiles];
 
-        for (let x = 0; x < amountHorizontal; ++x) {
-            for (let y = 0; y < amountVertical; ++y) {
-                tiles.push({ x, y });
+        let lowestX: number = undefined;
+        let lowestY: number = undefined;
+
+        tiles.forEach(tile => {
+            if (lowestX === undefined) {
+                lowestX = tile.x;
+            } else {
+                lowestX = lowestX < tile.x ? lowestX : tile.x;
+            }
+
+            if (lowestY === undefined) {
+                lowestY = tile.y;
+            } else {
+                lowestY = lowestY < tile.y ? lowestY : tile.y;
+            }
+
+        });
+
+        if (lowestX === undefined) {
+            lowestX = 0;
+        }
+
+        if (lowestY === undefined) {
+            lowestY = 0;
+        }
+
+        for (let x = lowestX; x < amountHorizontal + lowestX; ++x) {
+            for (let y = lowestY; y < amountVertical + lowestY; ++y) {
+                const existing = tiles.filter(tile => tile.x === x && tile.y === y);
+
+                if (!existing.length) {
+                    tiles.push(new MapFragmentTile({ x, y }, this.tileSize - 1));
+                }
             }
         }
 

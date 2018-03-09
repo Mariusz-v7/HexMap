@@ -8,20 +8,54 @@ import { MapTile } from './map-tile';
 
 export class MapFragmentTile {
     private d3Root: Selection<BaseType, any, any, any>;
+    private container: BaseType;
+    private bound = false;
+    private destroyed = false;
 
-    constructor(private container: BaseType, private mapTile: MapTile, private tileSize: number) {
+    constructor(private mapTile: MapTile, private tileSize: number) {
         console.log('tile created', mapTile)
+    }
+
+    get x() {
+        return this.mapTile.x;
+    }
+
+    get y() {
+        return this.mapTile.y;
+    }
+
+    get isBound() {
+        return this.bound;
+    }
+
+    init(container: BaseType) {
+        this.bound = true;
+        console.log('tile init', this.mapTile)
+
+        this.container = container;
 
         this.d3Root = select(this.container);
 
         this.d3Root.append('rect')
             .attr('x', 1)
             .attr('y', 1)
-            .attr('width', tileSize)
-            .attr('height', tileSize)
+            .attr('width', this.tileSize)
+            .attr('height', this.tileSize)
+
+
+        this.d3Root.append('text')
+            .attr('x', 10)
+            .attr('y', 30)
+            .style('fill', 'white')
+            .text(`${this.x} x ${this.y}`);
     }
 
     destroy() {
+        if (!this.destroyed) {
+            console.error('Tile already destroyed', this);
+            return;
+        }
+
         console.info('tile destroyed', this.mapTile)
     }
 
