@@ -5,23 +5,47 @@ import { MapTile } from './map-tile';
 
 export class MapFragmentController {
     private d3Root: Selection<HTMLElement, any, any, any>;
-    private svg: Selection<BaseType, any, any, any>;
+    private svg: Selection<BaseType, MapTile, any, any>;
+    private tileSize = 100;
+    private width = 0;
+    private height = 0;
 
     constructor(private container: HTMLElement) {
         this.d3Root = select(this.container);
-        const width = this.container.clientWidth;
-        const height = this.container.clientHeight;
+        this.width = this.container.clientWidth;
+        this.height = this.container.clientHeight;
+
+        const tileSize = this.tileSize;
 
         const zoomDef = zoom()
             .scaleExtent([1, 1])
             .on('zoom', () => {
+                const visibleTiles: MapTile[] = [];
                 this.svg.selectAll('g')
-                    .attr('transform', (d: MapTile) => `translate(${d.x + event.transform.x}, ${d.y + event.transform.y})`)
+                    .attr('transform', this.computeTranslate)
+                    .filter((d: MapTile) => this.filterPosition(d, event.transform))
+                    .each((d: MapTile) => visibleTiles.push(d));
+
+                // TODO: create missing tiles
+
+                const tiles = this.svg.selectAll('g')
+                    .data(visibleTiles);
+
+                tiles.exit()
+                    .each((d: MapTile) => d.fragment.destroy())
+                    .remove();
+
+                tiles.enter()
+                    .append('g')
+                    .attr('transform', this.computeTranslate)
+                    .each(function (d) {
+                        d.fragment = new MapFragmentTile(this, d, tileSize - 1);
+                    });
             });
 
         this.svg = this.d3Root.append('svg')
-            .attr('width', width)
-            .attr('height', height)
+            .attr('width', this.width)
+            .attr('height', this.height)
             .call(zoomDef);
 
         this.svg
@@ -29,25 +53,49 @@ export class MapFragmentController {
             .data(this.generateMapTiles())
             .enter()
             .append('g')
-            .attr('transform', d => `translate(${d.x}, ${d.y})`)
+            .attr('transform', this.computeTranslate)
             .each(function (d) {
-                new MapFragmentTile(this, d)
+                d.fragment = new MapFragmentTile(this, d, tileSize - 1)
             });
+    }
 
-        // todo: compute amount of tiles and their location
-        // todo: load and unload tiles dynamically when user drags the map
+    private computeTranslate = (tile: MapTile) => {
+        const transform = event ? event.transform : { x: 0, y: 0 };
+        return `translate(${tile.x * this.tileSize + transform.x}, ${tile.y * this.tileSize + transform.y})`;
+    }
+
+    private filterPosition(tile: MapTile, transform: { x: number, y: number }) {
+        if (tile.x * this.tileSize + transform.x + this.tileSize < 0) {
+            return false;
+        }
+
+        if (tile.y * this.tileSize + transform.y + this.tileSize < 0) {
+            return false;
+        }
+
+        if (tile.x * this.tileSize + transform.x > this.width) {
+            return false;
+        }
+
+        if (tile.y * this.tileSize + transform.y > this.height) {
+            return false;
+        }
+
+        return true;
     }
 
     private generateMapTiles(): MapTile[] {
-        return [
-            {
-                x: 0,
-                y: 0,//width: 99
-            },
-            {
-                x: 100,
-                y: 0,
+        const amountHorizontal = Math.ceil(this.width / this.tileSize);
+        const amountVertical = Math.ceil(this.height / this.tileSize);
+
+        const tiles: MapTile[] = [];
+
+        for (let x = 0; x < amountHorizontal; ++x) {
+            for (let y = 0; y < amountVertical; ++y) {
+                tiles.push({ x, y });
             }
-        ];
+        }
+
+        return tiles;
     }
 }
