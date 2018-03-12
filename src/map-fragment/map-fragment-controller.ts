@@ -6,7 +6,7 @@ import { MapTile } from './map-tile';
 export class MapFragmentController {
     private d3Root: Selection<HTMLElement, any, any, any>;
     private svg: Selection<BaseType, any, any, any>;
-    private tileSize = 100;
+    private tileSize = 250;
     private width = 0;
     private height = 0;
 
@@ -105,34 +105,15 @@ export class MapFragmentController {
 
         tiles = [...tiles];
 
-        let lowestX: number = undefined;
-        let lowestY: number = undefined;
+        const transform = event ? event.transform : { x: 0, y: 0 };
 
-        tiles.forEach(tile => {
-            if (lowestX === undefined) {
-                lowestX = tile.x;
-            } else {
-                lowestX = lowestX < tile.x ? lowestX : tile.x;
-            }
-
-            if (lowestY === undefined) {
-                lowestY = tile.y;
-            } else {
-                lowestY = lowestY < tile.y ? lowestY : tile.y;
-            }
-
-        });
-
-        if (lowestX === undefined) {
-            lowestX = 0;
+        const topLeft = {
+            x: -Math.ceil(transform.x / this.tileSize),
+            y: -Math.ceil(transform.y / this.tileSize)
         }
 
-        if (lowestY === undefined) {
-            lowestY = 0;
-        }
-
-        for (let x = lowestX; x < amountHorizontal + lowestX; ++x) {
-            for (let y = lowestY; y < amountVertical + lowestY; ++y) {
+        for (let x = topLeft.x; x < amountHorizontal + topLeft.x; ++x) {
+            for (let y = topLeft.y; y < amountVertical + topLeft.y; ++y) {
                 const existing = tiles.filter(tile => tile.x === x && tile.y === y);
 
                 if (!existing.length) {
