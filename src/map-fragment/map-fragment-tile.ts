@@ -36,6 +36,12 @@ export class MapFragmentTile {
 
         this.d3Root = select(this.container);
 
+        this.render();
+    }
+
+    render() {
+        this.d3Root.selectAll('*').remove(); // todo: maybe replace....
+
         this.d3Root.append('rect')
             .attr('x', 1)
             .attr('y', 1)
@@ -51,10 +57,12 @@ export class MapFragmentTile {
     }
 
     destroy() {
-        if (!this.destroyed) {
+        if (this.destroyed) {
             console.error('Tile already destroyed', this);
             return;
         }
+
+        this.destroyed = true;
 
         console.info('tile destroyed', this.mapTile)
     }

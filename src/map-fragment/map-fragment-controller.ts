@@ -43,15 +43,10 @@ export class MapFragmentController {
                     .remove();
 
                 tiles.merge(tiles)
-                    .each(function (d, y, z) {
-                        console.log(d)
-                        console.log(y)
-                        console.log(this)
-                        console.log(z)
-                        if (!d.isBound) {
-                            d.init(this);
-                        }
-                    });
+                    .each(function (d) {
+                        d.init(this);
+                    })
+                    .attr('transform', this.computeTranslate);
 
                 tiles.enter()
                     .append('g')
@@ -79,12 +74,12 @@ export class MapFragmentController {
             });
     }
 
-    private computeTranslate = (tile: MapTile) => {
+    private computeTranslate = (tile: MapFragmentTile) => {
         const transform = event ? event.transform : { x: 0, y: 0 };
         return `translate(${tile.x * this.tileSize + transform.x}, ${tile.y * this.tileSize + transform.y})`;
     }
 
-    private filterPosition(tile: MapTile, transform: { x: number, y: number }) {
+    private filterPosition(tile: MapFragmentTile, transform: { x: number, y: number }) {
         if (tile.x * this.tileSize + transform.x + this.tileSize < 0) {
             return false;
         }
@@ -105,8 +100,8 @@ export class MapFragmentController {
     }
 
     private generateMapTiles(tiles: MapFragmentTile[]): MapFragmentTile[] {
-        const amountHorizontal = Math.ceil(this.width / this.tileSize);
-        const amountVertical = Math.ceil(this.height / this.tileSize);
+        const amountHorizontal = Math.ceil(this.width / this.tileSize) + 1;
+        const amountVertical = Math.ceil(this.height / this.tileSize) + 1;
 
         tiles = [...tiles];
 
