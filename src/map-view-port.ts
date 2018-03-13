@@ -1,7 +1,4 @@
 import { select, Selection, BaseType } from 'd3-selection';
-import { Topology } from './topology';
-import { Renderer } from './renderer';
-import { MapController } from './map-controller';
 import styles from './styles.css';
 import { MapFragmentController } from './map-fragment/map-fragment-controller';
 
