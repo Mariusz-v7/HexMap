@@ -24,37 +24,17 @@ export class MapFragmentController {
                 let invisibleTiles: MapFragmentTile[] = [];
 
                 this.svg.selectAll('g')
-                    .attr('transform', this.computeTranslate)
                     .filter((d: MapFragmentTile) => this.filterPosition(d, event.transform))
                     .each((d: MapFragmentTile) => visibleTiles.push(d));
 
                 this.svg.selectAll('g')
-                    .attr('transform', this.computeTranslate)
                     .filter((d: MapFragmentTile) => !this.filterPosition(d, event.transform))
                     .each((d: MapFragmentTile) => invisibleTiles.push(d));
 
                 visibleTiles = this.generateMapTiles(visibleTiles);
 
-                const tiles = this.svg.selectAll('g')
-                    .data(visibleTiles);
-
-                tiles.exit()
-                    .each((d: MapFragmentTile) => d.destroy())
-                    .remove();
-
-                tiles.merge(tiles)
-                    .each(function (d) {
-                        d.init(this);
-                    })
-                    .attr('transform', this.computeTranslate);
-
-                tiles.enter()
-                    .append('g')
-                    .attr('transform', this.computeTranslate)
-                    .each(function (d) {
-                        d.init(this);
-                    });
-
+                this.render(visibleTiles);
+                
                 invisibleTiles.forEach(tile => tile.destroy());
             });
 
@@ -63,10 +43,24 @@ export class MapFragmentController {
             .attr('height', this.height)
             .call(zoomDef);
 
-        this.svg
-            .selectAll('g')
-            .data(this.generateMapTiles([]))
-            .enter()
+            this.render(this.generateMapTiles([]));
+    }
+
+    private render(fragments: MapFragmentTile[] = []) {
+        const tiles = this.svg.selectAll('g')
+            .data(fragments);
+
+        tiles.exit()
+            .each((d: MapFragmentTile) => d.destroy())
+            .remove();
+
+        tiles.merge(tiles)
+            .each(function (d) {
+                d.init(this);
+            })
+            .attr('transform', this.computeTranslate);
+
+        tiles.enter()
             .append('g')
             .attr('transform', this.computeTranslate)
             .each(function (d) {
