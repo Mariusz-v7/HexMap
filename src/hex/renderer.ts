@@ -9,30 +9,33 @@ import { Tile } from './tile';
 export class Renderer {
     private path: GeoPath<any, any>;
 
-    constructor(private d3root: Selection<BaseType, any, any, any>, private mapContainer: Selection<BaseType, any, any, any>,
-        private topology: Topology) {
+    constructor(private viewport: Selection<BaseType, any, any, any>, private topology: Topology) {
         this.path = geoPath(new HexProjection());
     }
 
     render() {
-        this.mapContainer.selectAll('path').remove(); // TODO: this may be inefficient...
+        const path = this.viewport.selectAll('path')
+            .data(this.topology.objects.tiles.geometries);
 
-        this.mapContainer
-            .selectAll('path')
-            .data(this.topology.objects.tiles.geometries)
-            .enter()
+        path.exit().remove();
+
+        path.enter()
             .append('path')
             .attr('class', 'tile')
-            .attr('d', tile => this.calculatePath(tile))
-            .on('mousemove', tile => this.mousemove(tile))
+            .attr('d', this.calculatePath)
+            .on('mousemove', this.mousemove)
             ;
     }
 
-    private mousemove(tile: Tile) {
+    destroy() {
+
+    }
+
+    private mousemove = (tile: Tile) => {
         tile.onMouseMove();
     }
 
-    private calculatePath(tile: Tile) {
+    private calculatePath = (tile: Tile) => {
         const conversion: any = feature(this.topology, tile);
 
         const geoJsonFeature: Feature<any, any> = {

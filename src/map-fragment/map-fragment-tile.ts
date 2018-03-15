@@ -5,15 +5,17 @@ import { json } from 'd3'
 
 import { Selection, BaseType } from 'd3-selection';
 import { MapTile } from './map-tile';
+import { Topology } from '../hex/topology';
+import { Renderer } from '../hex/renderer';
 
 export class MapFragmentTile {
     private d3Root: Selection<BaseType, any, any, any>;
     private container: BaseType;
-    private bound = false;
     private destroyed = false;
+    private topology: Topology;
+    private renderer: Renderer;
 
     constructor(private mapTile: MapTile, private tileSize: number) {
-        console.log('tile created', mapTile)
     }
 
     get x() {
@@ -24,22 +26,22 @@ export class MapFragmentTile {
         return this.mapTile.y;
     }
 
-    get isBound() {
-        return this.bound;
-    }
-
     init(container: BaseType) {
-        this.bound = true;
-        console.log('tile init', this.mapTile)
-
         this.container = container;
-
         this.d3Root = select(this.container);
 
-        this.render();
+        if (this.renderer) {
+            this.renderer.destroy();
+        }
+
+        this.topology = new Topology(this.tileSize, this.tileSize);
+        this.renderer = new Renderer(this.d3Root, this.topology);
+
+        this.renderer.render();
+        // this.render();
     }
 
-    render() {
+    private render() { // test purposes
         this.d3Root.selectAll('*').remove(); // todo: maybe replace....
 
         this.d3Root.append('rect')
@@ -58,13 +60,10 @@ export class MapFragmentTile {
 
     destroy() {
         if (this.destroyed) {
-            console.error('Tile already destroyed', this);
             return;
         }
 
         this.destroyed = true;
-
-        console.info('tile destroyed', this.mapTile)
     }
 
 }
