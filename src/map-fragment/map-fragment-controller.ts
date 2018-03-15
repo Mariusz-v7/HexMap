@@ -6,7 +6,7 @@ import { MapTile } from './map-tile';
 export class MapFragmentController {
     private d3Root: Selection<HTMLElement, any, any, any>;
     private svg: Selection<BaseType, any, any, any>;
-    private tileSize = 200;
+    private tileSize = 1000;
     private width = 0;
     private height = 0;
 

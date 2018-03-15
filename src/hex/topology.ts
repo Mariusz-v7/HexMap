@@ -15,41 +15,53 @@ export class Topology {
          * .......    |
          */
 
-        const horizontalAmount = 3;
-        const verticalAmount = 3;
-
-        for (let y = 0; y < verticalAmount; ++y) {
-            for (let x = 0; x < horizontalAmount; ++x) {
+        const horizontalAmount = 10;
+         const verticalAmount = 2;
+       
+        for (let y = 0; y < verticalAmount + 1; ++y) {
+            for (let x = -1; x < horizontalAmount; ++x) {
                 const dx = 2 * x + y % 2;
                 const dy = 2 * y;
 
-                this._arcs.push( // second position is !delta position!
-                    [
+                if (x !== -1) {
+                    this._arcs.push([
                         [-1 + dx, dy], [1, -1]
-                    ],
-                    [
+                    ]);
+                }
+
+                if (x !== -1 || y % 2 === 1) {
+                    this._arcs.push([
                         [dx, -1 + dy], [1, 1]
-                    ],
-                    [
-                        [1 + dx, dy], [0, 1]
-                    ],
-                );
+                    ]);
+                }
+
+                this._arcs.push([
+                    [1 + dx, dy], [0, 1]
+                ]);
             }
         }
 
-        this.tiles.push(new Tile([
-            [
-                3, 4, 5,
-                ~12, ~10, ~2
-            ]
-        ]));
+        for (let y = 0; y < 1; ++y) {
+            for (let x = 0; x < horizontalAmount; ++x) {
+                const top = 1 + x + 2 * x;
+                const bottom = horizontalAmount * 3 + x * 3 + 3;
+
+                this.tiles.push(new Tile([
+                    [
+                        top, top + 1, top + 2,
+                        ~(bottom), ~(bottom - 2), ~(top + 2 - 3)
+                    ]
+                ]));
+            }
+        }
+
 
     }
 
     get transform() {
         return {
             scale: [1, 1],
-            translate: [0, 0]
+            translate: [10, 10]
         };
     }
 
