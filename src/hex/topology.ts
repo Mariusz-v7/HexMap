@@ -15,9 +15,9 @@ export class Topology {
          * .......    |
          */
 
-        const horizontalAmount = 10;
-         const verticalAmount = 2;
-       
+        const verticalAmount = 4;
+        const horizontalAmount = 2;
+
         for (let y = 0; y < verticalAmount + 1; ++y) {
             for (let x = -1; x < horizontalAmount; ++x) {
                 const dx = 2 * x + y % 2;
@@ -41,10 +41,26 @@ export class Topology {
             }
         }
 
-        for (let y = 0; y < 1; ++y) {
+        for (let y = 0; y < verticalAmount; ++y) {
             for (let x = 0; x < horizontalAmount; ++x) {
-                const top = 1 + x + 2 * x;
+                const amountOfEvenRows = Math.ceil(y / 2);
+                const amountOfOddRows = Math.floor(y / 2);
+
+                let topEdgesAmountOnEvenRows = amountOfEvenRows * (1 + 3 * horizontalAmount);
+                if (y > 1) {
+                    topEdgesAmountOnEvenRows -= (amountOfEvenRows - 1);
+                }
+                const topEdgesAmountOnOddRows = amountOfOddRows * (2 + 3 * horizontalAmount);
+                const amountOfEdgesInPreviousRows = topEdgesAmountOnEvenRows + topEdgesAmountOnOddRows ;
+
+                const even = 1 + x * 3;
+                const odd = 2 + x * 3;
+
+                // const top = 1 + x + 2 * x;
+                const top = amountOfEdgesInPreviousRows + even * ((y + 1) % 2) + odd * (y % 2);
                 const bottom = horizontalAmount * 3 + x * 3 + 3;
+
+                console.log(x, y, '---------', top, bottom)
 
                 this.tiles.push(new Tile([
                     [
@@ -61,7 +77,7 @@ export class Topology {
     get transform() {
         return {
             scale: [1, 1],
-            translate: [10, 10]
+            translate: [0, 0]
         };
     }
 
