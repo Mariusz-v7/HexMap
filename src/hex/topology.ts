@@ -8,15 +8,12 @@ export class Topology {
     private _arcs: number[][][] = [];
     private tiles: Tile[] = [];
 
-    constructor(private width: number, private height: number) {
+    constructor(private horizontalAmount: number, private verticalAmount: number) {
 
         /**
          * ....... / \
          * .......    |
          */
-
-        const horizontalAmount = 10;
-        const verticalAmount = 10;
 
         const upperEdges: number[][][] = [];
 

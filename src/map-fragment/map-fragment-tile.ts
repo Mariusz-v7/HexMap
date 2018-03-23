@@ -15,7 +15,8 @@ export class MapFragmentTile {
     private topology: Topology;
     private renderer: Renderer;
 
-    constructor(private mapTile: MapTile, private tileSize: number) {
+    constructor(private mapTile: MapTile, private mapTileWidth: number, private mapTileHeight: number,
+        private hexSize: number, private hexAmountHorizontal: number, private hexAmountVertical: number) {
     }
 
     get x() {
@@ -34,8 +35,8 @@ export class MapFragmentTile {
             this.renderer.destroy();
         }
 
-        this.topology = new Topology(this.tileSize, this.tileSize);
-        this.renderer = new Renderer(this.d3Root, this.topology);
+        this.topology = new Topology(this.hexAmountHorizontal, this.hexAmountVertical);
+        this.renderer = new Renderer(this.d3Root, this.topology, this.hexSize);
 
         this.renderer.render();
         // this.render();
@@ -47,8 +48,8 @@ export class MapFragmentTile {
         this.d3Root.append('rect')
             .attr('x', 1)
             .attr('y', 1)
-            .attr('width', this.tileSize)
-            .attr('height', this.tileSize)
+            .attr('width', this.mapTileWidth)
+            .attr('height', this.mapTileHeight)
 
 
         this.d3Root.append('text')

@@ -9,8 +9,8 @@ import { Tile } from './tile';
 export class Renderer {
     private path: GeoPath<any, any>;
 
-    constructor(private viewport: Selection<BaseType, any, any, any>, private topology: Topology) {
-        this.path = geoPath(new HexProjection());
+    constructor(private viewport: Selection<BaseType, any, any, any>, private topology: Topology, hexSize: number) {
+        this.path = geoPath(new HexProjection(hexSize));
     }
 
     render() {
