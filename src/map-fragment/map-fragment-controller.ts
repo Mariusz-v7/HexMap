@@ -88,7 +88,7 @@ export class MapFragmentController {
     private computeTranslate = (tile: MapFragmentTile) => {
         const transform = event ? { ...event.transform } : { x: 0, y: 0 };
 
-        if (tile.y % 2 === 0) {
+        if (this.hexAmountVertical % 2 === 1 && tile.y % 2 === 0) {
             transform.x += this.computeHexWidth(this.hexSize) / 2;
         }
 
