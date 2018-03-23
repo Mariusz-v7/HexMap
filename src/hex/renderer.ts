@@ -38,8 +38,6 @@ export class Renderer {
     private calculatePath = (tile: Tile) => {
         const conversion: any = feature(this.topology, tile);
 
-        console.info(conversion.geometry.coordinates[0])
-
         const geoJsonFeature: Feature<any, any> = {
             geometry: conversion.geometry,
             properties: conversion.properties,

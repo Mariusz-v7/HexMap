@@ -15,11 +15,21 @@ export class Topology {
          * .......    |
          */
 
-        const verticalAmount = 4;
-        const horizontalAmount = 2;
+        const horizontalAmount = 10;
+        const verticalAmount = 10;
 
-        for (let y = 0; y < verticalAmount + 1; ++y) {
-            for (let x = -1; x < horizontalAmount; ++x) {
+        const upperEdges: number[][][] = [];
+
+        for (let x = -1; x < horizontalAmount + 2; ++x) {
+            if (!upperEdges[x]) {
+                upperEdges[x] = [];
+            }
+
+            for (let y = 0; y < verticalAmount + 1; ++y) {
+                if (!upperEdges[x][y]) {
+                    upperEdges[x][y] = [];
+                }
+
                 const dx = 2 * x + y % 2;
                 const dy = 2 * y;
 
@@ -27,47 +37,53 @@ export class Topology {
                     this._arcs.push([
                         [-1 + dx, dy], [1, -1]
                     ]);
+
+                    upperEdges[x][y][0] = this._arcs.length - 1;
                 }
 
                 if (x !== -1 || y % 2 === 1) {
                     this._arcs.push([
                         [dx, -1 + dy], [1, 1]
                     ]);
+
+                    upperEdges[x][y][1] = this._arcs.length - 1;
                 }
 
                 this._arcs.push([
                     [1 + dx, dy], [0, 1]
                 ]);
+
+                upperEdges[x][y][2] = this._arcs.length - 1;
             }
         }
 
-        for (let y = 0; y < verticalAmount; ++y) {
-            for (let x = 0; x < horizontalAmount; ++x) {
-                const amountOfEvenRows = Math.ceil(y / 2);
-                const amountOfOddRows = Math.floor(y / 2);
 
-                let topEdgesAmountOnEvenRows = amountOfEvenRows * (1 + 3 * horizontalAmount);
-                if (y > 1) {
-                    topEdgesAmountOnEvenRows -= (amountOfEvenRows - 1);
+        for (let x = 0; x < horizontalAmount; ++x) {
+            for (let y = 0; y < verticalAmount; ++y) {
+                if (y % 2 === 0) {
+                    this.tiles.push(new Tile([
+                        [
+                            upperEdges[x][y][0],
+                            upperEdges[x][y][1],
+                            upperEdges[x][y][2],
+                            ~upperEdges[x][y + 1][0],
+                            ~upperEdges[x - 1][y + 1][1],
+                            ~upperEdges[x - 1][y][2],
+                        ]
+                    ]));
+                } else {
+                    this.tiles.push(new Tile([
+                        [
+                            upperEdges[x][y][0],
+                            upperEdges[x][y][1],
+                            upperEdges[x][y][2],
+                            ~upperEdges[x + 1][y + 1][0],
+                            ~upperEdges[x][y + 1][1],
+                            ~upperEdges[x - 1][y][2],
+                        ]
+                    ]));
                 }
-                const topEdgesAmountOnOddRows = amountOfOddRows * (2 + 3 * horizontalAmount);
-                const amountOfEdgesInPreviousRows = topEdgesAmountOnEvenRows + topEdgesAmountOnOddRows ;
 
-                const even = 1 + x * 3;
-                const odd = 2 + x * 3;
-
-                // const top = 1 + x + 2 * x;
-                const top = amountOfEdgesInPreviousRows + even * ((y + 1) % 2) + odd * (y % 2);
-                const bottom = horizontalAmount * 3 + x * 3 + 3;
-
-                console.log(x, y, '---------', top, bottom)
-
-                this.tiles.push(new Tile([
-                    [
-                        top, top + 1, top + 2,
-                        ~(bottom), ~(bottom - 2), ~(top + 2 - 3)
-                    ]
-                ]));
             }
         }
 
