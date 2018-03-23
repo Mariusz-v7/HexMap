@@ -27,7 +27,12 @@ export class Renderer {
             .on('mousemove', tile => tile.onMouseMove())
             .on('mouseout', tile => tile.onMouseLeave())
             .each(function (tile) {
-                tile.init(this);
+                tile.setElement(this);
+            });
+
+        path.merge(path)
+            .each(function (tile) {
+                tile.setElement(this);
             });
     }
 

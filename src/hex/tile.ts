@@ -8,7 +8,7 @@ export class Tile {
         this._arcs = arcs;
     }
 
-    init(element: BaseType) {
+    setElement(element: BaseType) {
         this.element = select(element);
     }
 

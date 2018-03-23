@@ -5,13 +5,13 @@ export class HexStream implements GeoStream {
     private dy = 0;
 
     constructor(private stream: GeoStream) {
-        // this.dx = this.radius * 2 * Math.sin(Math.PI / 3);
-        // this.dy = this.radius * 1.5;
+        const radius = 10;
+        this.dx = radius * 2 * Math.sin(Math.PI / 3);
+        this.dy = radius * 1.5;
     }
 
     get point() {
-        return (x, y) => this.stream.point(0 + x * 10 + 50, y * 10 + 50);
-        // return (x: number, y: number) => this.stream.point(x * this.dx / 2, (y - (2 - (y & 1)) / 3) * this.dy / 2)
+        return (x: number, y: number) => this.stream.point(x * this.dx / 2, (y - (2 - (y & 1)) / 3) * this.dy / 2)
     }
 
     get lineStart() {
