@@ -25,11 +25,6 @@ export class MapFragmentController {
         this.mapTileWidth = hexWidth * this.hexAmountHorizontal;
         this.mapTileHeight = hexHeight * this.hexAmountVertical * 0.75;
 
-        //todo: remove
-        this.mapTileHeight += 10;
-        this.mapTileWidth += 1;
-        //todo /remove
-
         const zoomDef = zoom()
             .scaleExtent([1, 1])
             .on('zoom', () => {
@@ -96,11 +91,11 @@ export class MapFragmentController {
     }
 
     private filterPosition(tile: MapFragmentTile, transform: { x: number, y: number }) {
-        if (tile.x * this.mapTileWidth + transform.x + this.mapTileWidth < 0) {
+        if (tile.x * this.mapTileWidth + transform.x + this.mapTileWidth < -1) {
             return false;
         }
 
-        if (tile.y * this.mapTileHeight + transform.y + this.mapTileHeight < 0) {
+        if (tile.y * this.mapTileHeight + transform.y + this.mapTileHeight < -1) {
             return false;
         }
 
@@ -116,16 +111,16 @@ export class MapFragmentController {
     }
 
     private generateMapTiles(tiles: MapFragmentTile[]): MapFragmentTile[] {
-        const amountHorizontal = Math.ceil(this.width / this.mapTileWidth) + 1;
-        const amountVertical = Math.ceil(this.height / this.mapTileHeight) + 1;
+        const amountHorizontal = Math.ceil(this.width / this.mapTileWidth) + 2;
+        const amountVertical = Math.ceil(this.height / this.mapTileHeight) + 2;
 
         tiles = [...tiles];
 
         const transform = event ? event.transform : { x: 0, y: 0 };
 
         const topLeft = {
-            x: -Math.ceil(transform.x / this.mapTileWidth),
-            y: -Math.ceil(transform.y / this.mapTileHeight)
+            x: -Math.ceil(transform.x / this.mapTileWidth) - 1,
+            y: -Math.ceil(transform.y / this.mapTileHeight) - 1
         }
 
         for (let x = topLeft.x; x < amountHorizontal + topLeft.x; ++x) {
