@@ -23,16 +23,16 @@ export class Renderer {
             .append('path')
             .attr('class', 'tile')
             .attr('d', this.calculatePath)
-            .on('mousemove', this.mousemove)
-            ;
+            .on('mouseover', tile => tile.onMouseEnter())
+            .on('mousemove', tile => tile.onMouseMove())
+            .on('mouseout', tile => tile.onMouseLeave())
+            .each(function (tile) {
+                tile.init(this);
+            });
     }
 
     destroy() {
 
-    }
-
-    private mousemove = (tile: Tile) => {
-        tile.onMouseMove();
     }
 
     private calculatePath = (tile: Tile) => {
