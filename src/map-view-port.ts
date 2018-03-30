@@ -23,8 +23,20 @@ export class MapViewPort extends HTMLElement {
     }
 
     private connectedCallback() {
-        this.height = parseInt(this.getAttribute('height') || '0', 10);
-        this.width = parseInt(this.getAttribute('width') || '0', 10);
+        const inputHeight = this.getAttribute('height');
+        const inputWidth = this.getAttribute('width');
+
+        if (inputWidth === 'auto') {
+            this.width = window.innerWidth;
+        } else {
+            this.width = parseInt(inputWidth || '0', 10);
+        }
+
+        if (inputHeight === 'auto') {
+            this.height = window.innerHeight;
+        } else {
+            this.height = parseInt(inputHeight || '0', 10);
+        }
 
         this.container.setAttribute('style', `
             width: ${this.width}px;
