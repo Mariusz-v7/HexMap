@@ -1,4 +1,6 @@
-import { select, BaseType, Selection } from 'd3-selection'
+import { select, BaseType, Selection } from 'd3-selection';
+import { store } from '../redux/store';
+import { setSelectedTile } from '../redux/actions/select-tile';
 
 export class Tile {
     private _arcs: number[][];
@@ -39,6 +41,7 @@ export class Tile {
     }
 
     onMouseClick() {
-        this.selection.classed('selected', true);
+        //todo: real x, y of a tile
+        store.dispatch(setSelectedTile(0, 0));
     }
 }
