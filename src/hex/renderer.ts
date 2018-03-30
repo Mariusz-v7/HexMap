@@ -26,6 +26,7 @@ export class Renderer {
             .on('mouseover', tile => tile.onMouseEnter())
             .on('mousemove', tile => tile.onMouseMove())
             .on('mouseout', tile => tile.onMouseLeave())
+            .on('click', tile => tile.onMouseClick())
             .each(function (tile) {
                 tile.setElement(this);
             });

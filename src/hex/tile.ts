@@ -21,7 +21,7 @@ export class Tile {
     }
 
     onMouseEnter() {
-        this.element.attr('fill', 'red');
+        // this.element.attr('fill', 'red');
     }
 
     onMouseMove() {
@@ -29,6 +29,10 @@ export class Tile {
     }
 
     onMouseLeave() {
-        this.element.attr('fill', 'gray');
+        // this.element.attr('fill', 'gray');
+    }
+
+    onMouseClick() {
+        this.element.attr('fill', 'green');
     }
 }

@@ -42,8 +42,8 @@ export class MapFragmentTile {
         this.topology = new Topology(this.hexAmountHorizontal, this.hexAmountVertical);
         this.renderer = new Renderer(this.d3Root, this.topology, this.hexSize);
 
-        // this.renderer.render();
-        this.render();
+        this.renderer.render();
+        // this.render();
     }
 
     private render() { // test purposes
