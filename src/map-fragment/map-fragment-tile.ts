@@ -28,6 +28,10 @@ export class MapFragmentTile {
     }
 
     init(container: BaseType) {
+        if (this.container === container) {
+            return;
+        }
+
         this.container = container;
         this.d3Root = select(this.container);
 
@@ -38,8 +42,8 @@ export class MapFragmentTile {
         this.topology = new Topology(this.hexAmountHorizontal, this.hexAmountVertical);
         this.renderer = new Renderer(this.d3Root, this.topology, this.hexSize);
 
-        this.renderer.render();
-        // this.render();
+        // this.renderer.render();
+        this.render();
     }
 
     private render() { // test purposes
@@ -57,6 +61,25 @@ export class MapFragmentTile {
             .attr('y', 30)
             .style('fill', 'white')
             .text(`${this.x} x ${this.y}`);
+
+        this.d3Root.append('text')
+            .attr('x', 10)
+            .attr('y', 60)
+            .style('fill', 'white')
+            .text('Last updated:');
+
+        const date = new Date();
+
+        this.d3Root.append('text')
+            .attr('x', 10)
+            .attr('y', 90)
+            .style('fill', 'white')
+            .text(
+                `${date.getHours().toString().padStart(2, '0')}:` +
+                `${date.getMinutes().toString().padStart(2, '0')}:`+
+                `${date.getSeconds().toString().padStart(2, '0')}.`+
+                `${date.getMilliseconds().toString().padStart(3, '0')}`
+            );
     }
 
     destroy() {

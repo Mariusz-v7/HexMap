@@ -28,20 +28,24 @@ export class MapFragmentController {
         const zoomDef = zoom()
             .scaleExtent([1, 1])
             .on('zoom', () => {
-                let visibleTiles: MapFragmentTile[] = [];
-                let invisibleTiles: MapFragmentTile[] = [];
+                const visibleTiles: MapFragmentTile[] = [];
+                const invisibleTiles: MapFragmentTile[] = [];
+                const allTiles: MapFragmentTile[] = [];
 
                 this.svg.selectAll('g')
-                    .filter((d: MapFragmentTile) => this.filterPosition(d, event.transform))
-                    .each((d: MapFragmentTile) => visibleTiles.push(d));
+                    .each((d: MapFragmentTile) => {
+                        allTiles.push(d);
 
-                this.svg.selectAll('g')
-                    .filter((d: MapFragmentTile) => !this.filterPosition(d, event.transform))
-                    .each((d: MapFragmentTile) => invisibleTiles.push(d));
+                        if (this.filterPosition(d, event.transform)) {
+                            visibleTiles.push(d);
+                        } else {
+                            invisibleTiles.push(d);
+                        }
+                    });
 
-                visibleTiles = this.generateMapTiles(visibleTiles);
+                const newTileSet = this.generateMapTiles(allTiles, visibleTiles, invisibleTiles);
 
-                this.render(visibleTiles);
+                this.render(newTileSet);
 
                 invisibleTiles.forEach(tile => tile.destroy());
             });
@@ -51,7 +55,7 @@ export class MapFragmentController {
             .attr('height', this.height)
             .call(zoomDef);
 
-        this.render(this.generateMapTiles([]));
+        this.render(this.generateMapTiles());
     }
 
     computeHexWidth(hexSize: number) {
@@ -110,11 +114,15 @@ export class MapFragmentController {
         return true;
     }
 
-    private generateMapTiles(tiles: MapFragmentTile[]): MapFragmentTile[] {
+    private generateMapTiles(
+        allTiles: MapFragmentTile[] = [],
+        visibleTiles: MapFragmentTile[] = [],
+        invisibleTiles: MapFragmentTile[] = []
+    ): MapFragmentTile[] {
         const amountHorizontal = Math.ceil(this.width / this.mapTileWidth) + 2;
         const amountVertical = Math.ceil(this.height / this.mapTileHeight) + 2;
 
-        tiles = [...tiles];
+        const newTileSet: MapFragmentTile[] = [];
 
         const transform = event ? event.transform : { x: 0, y: 0 };
 
@@ -125,16 +133,41 @@ export class MapFragmentController {
 
         for (let x = topLeft.x; x < amountHorizontal + topLeft.x; ++x) {
             for (let y = topLeft.y; y < amountVertical + topLeft.y; ++y) {
-                const existing = tiles.filter(tile => tile.x === x && tile.y === y);
-
-                if (!existing.length) {
-                    tiles.push(new MapFragmentTile({ x, y }, this.mapTileWidth, this.mapTileHeight,
+                newTileSet.push(
+                    new MapFragmentTile(
+                        { x, y }, this.mapTileWidth, this.mapTileHeight,
                         this.hexSize, this.hexAmountHorizontal, this.hexAmountVertical
-                    ));
-                }
+                    )
+                );
             }
         }
 
-        return tiles;
+        invisibleTiles = [...invisibleTiles];
+        const resulting: MapFragmentTile[] = new Array(newTileSet.length);
+
+        newTileSet.forEach(tile => {
+            const existing = visibleTiles
+                .find(checking => checking.x === tile.x && checking.y === tile.y);
+
+            if (existing) {
+                const existingIndex = allTiles
+                    .findIndex(checking => checking.x === existing.x && checking.y === existing.y)
+
+                resulting[existingIndex] = existing;
+            } else {
+                if (invisibleTiles.length > 0) {
+                    const invisible = invisibleTiles.shift();
+                    const invisibleIndex = allTiles
+                        .findIndex(checking => checking.x === invisible.x && checking.y === invisible.y);
+
+                    resulting[invisibleIndex] = tile;
+                } else {
+                    const emptySlotIndex = resulting.findIndex(x => x === undefined);
+                    resulting[emptySlotIndex] = tile;
+                }
+            }
+        });
+
+        return resulting;
     }
 }
