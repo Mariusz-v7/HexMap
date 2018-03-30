@@ -1,11 +1,13 @@
 import { select, BaseType, Selection } from 'd3-selection';
 import { store } from '../redux/store';
 import { setSelectedTile } from '../redux/actions/select-tile';
+import { selectedTile, SelectedTile } from '../redux/reducers/index';
 
 export class Tile {
     private _arcs: number[][];
     private selection: Selection<BaseType, any, any, any>;
     private element: BaseType;
+    private unsubscribe: any;
 
     constructor(arcs: number[][]) {
         this._arcs = arcs;
@@ -16,9 +18,33 @@ export class Tile {
             return;
         }
 
+        this.unsubscribe = store.subscribe(() => {
+            const state = store.getState().selectedTile;
+            this.update(state);
+        });
+
         this.element = element;
         this.selection = select(element);
         this.selection.attr('class', 'tile');
+
+        const state = store.getState().selectedTile;
+        this.update(state);
+    }
+
+    private update(selectedTile: SelectedTile) {
+        //todo: tile coords
+        if (selectedTile.x === 0 && selectedTile.y === 0 && selectedTile.selected) {
+            this.selection.classed('selected', true);
+        } else {
+            this.selection.classed('selected', false);
+        }
+
+    }
+
+    destroy() {
+        if (this.unsubscribe) {
+            this.unsubscribe();
+        }
     }
 
     get type() {
@@ -30,14 +56,12 @@ export class Tile {
     }
 
     onMouseEnter() {
-        // this.element.attr('fill', 'red');
     }
 
     onMouseMove() {
     }
 
     onMouseLeave() {
-        // this.element.attr('fill', 'gray');
     }
 
     onMouseClick() {

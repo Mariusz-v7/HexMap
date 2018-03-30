@@ -17,7 +17,8 @@ export class Renderer {
         const path = this.viewport.selectAll('path')
             .data(this.topology.objects.tiles.geometries);
 
-        path.exit().remove();
+        // path.exit()
+        //     .remove();
 
         path.enter()
             .append('path')
@@ -37,7 +38,10 @@ export class Renderer {
     }
 
     destroy() {
-
+        const path = this.viewport.selectAll('path')
+            .data(this.topology.objects.tiles.geometries)
+            .each(tile => tile.destroy())
+            ;
     }
 
     private calculatePath = (tile: Tile) => {

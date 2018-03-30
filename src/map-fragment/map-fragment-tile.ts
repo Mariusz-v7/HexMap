@@ -87,6 +87,10 @@ export class MapFragmentTile {
             return;
         }
 
+        if (this.renderer) {
+            this.renderer.destroy();
+        }
+
         this.destroyed = true;
     }
 
