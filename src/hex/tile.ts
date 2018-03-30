@@ -4,9 +4,6 @@ export class Tile {
     private _arcs: number[][];
     private selection: Selection<BaseType, any, any, any>;
     private element: BaseType;
-    private defaultAttributes: { [id: string]: any } = {
-        fill: null
-    };
 
     constructor(arcs: number[][]) {
         this._arcs = arcs;
@@ -19,10 +16,7 @@ export class Tile {
 
         this.element = element;
         this.selection = select(element);
-
-        for (let attr in this.defaultAttributes) {
-            this.selection.attr(attr, this.defaultAttributes[attr]);
-        }
+        this.selection.attr('class', 'tile');
     }
 
     get type() {
@@ -45,6 +39,6 @@ export class Tile {
     }
 
     onMouseClick() {
-        this.selection.attr('fill', 'green');
+        this.selection.classed('selected', true);
     }
 }

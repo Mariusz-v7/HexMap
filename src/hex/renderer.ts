@@ -21,7 +21,6 @@ export class Renderer {
 
         path.enter()
             .append('path')
-            .attr('class', 'tile')
             .attr('d', this.calculatePath)
             .on('mouseover', tile => tile.onMouseEnter())
             .on('mousemove', tile => tile.onMouseMove())

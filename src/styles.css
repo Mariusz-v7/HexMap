@@ -1,3 +1,15 @@
 .container {
   
 }    
+
+.tile {
+  fill: #fff;
+}
+
+.tile:hover { 
+  fill: #dfd;
+}
+
+.tile.selected {
+  fill: #8f8;
+}
