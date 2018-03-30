@@ -28,12 +28,12 @@ export class Renderer {
             .on('mouseout', tile => tile.onMouseLeave())
             .on('click', tile => tile.onMouseClick())
             .each(function (tile) {
-                tile.setElement(this);
+                tile.init(this);
             });
 
         path.merge(path)
             .each(function (tile) {
-                tile.setElement(this);
+                tile.init(this);
             });
     }
 

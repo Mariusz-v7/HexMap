@@ -2,14 +2,27 @@ import { select, BaseType, Selection } from 'd3-selection'
 
 export class Tile {
     private _arcs: number[][];
-    private element: Selection<BaseType, any, any, any>;
+    private selection: Selection<BaseType, any, any, any>;
+    private element: BaseType;
+    private defaultAttributes: { [id: string]: any } = {
+        fill: null
+    };
 
     constructor(arcs: number[][]) {
         this._arcs = arcs;
     }
 
-    setElement(element: BaseType) {
-        this.element = select(element);
+    init(element: BaseType) {
+        if (this.element === element) {
+            return;
+        }
+
+        this.element = element;
+        this.selection = select(element);
+
+        for (let attr in this.defaultAttributes) {
+            this.selection.attr(attr, this.defaultAttributes[attr]);
+        }
     }
 
     get type() {
@@ -25,7 +38,6 @@ export class Tile {
     }
 
     onMouseMove() {
-        console.log('Test');
     }
 
     onMouseLeave() {
@@ -33,6 +45,6 @@ export class Tile {
     }
 
     onMouseClick() {
-        this.element.attr('fill', 'green');
+        this.selection.attr('fill', 'green');
     }
 }
