@@ -12,3 +12,10 @@ export function setSelectedTile(x: number, y: number): SelectTileAction {
         tile: { x, y, selected: true },
     };
 }
+
+export function clearSelectedTile(): SelectTileAction {
+    return {
+        type: ActionType.SELECT_TILE,
+        tile: { selected: false }
+    };
+}

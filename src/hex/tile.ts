@@ -1,6 +1,6 @@
 import { select, BaseType, Selection } from 'd3-selection';
 import { store } from '../redux/store';
-import { setSelectedTile } from '../redux/actions/select-tile';
+import { setSelectedTile, clearSelectedTile } from '../redux/actions/select-tile';
 import { selectedTile, SelectedTile } from '../redux/reducers/index';
 
 export class Tile {
@@ -37,7 +37,6 @@ export class Tile {
         } else {
             this.selection.classed('selected', false);
         }
-
     }
 
     destroy() {
@@ -64,6 +63,10 @@ export class Tile {
     }
 
     onMouseClick() {
-        store.dispatch(setSelectedTile(this.x, this.y));
+       if (this.selection.classed('selected')) {
+            store.dispatch(clearSelectedTile());
+        } else {
+            store.dispatch(setSelectedTile(this.x, this.y));
+        }
     }
 }
