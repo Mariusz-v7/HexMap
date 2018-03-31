@@ -39,7 +39,7 @@ export class MapFragmentTile {
             this.renderer.destroy();
         }
 
-        this.topology = new Topology(this.hexAmountHorizontal, this.hexAmountVertical);
+        this.topology = new Topology(this.hexAmountHorizontal, this.hexAmountVertical, this.x, this.y);
         this.renderer = new Renderer(this.d3Root, this.topology, this.hexSize);
 
         this.renderer.render();
@@ -76,8 +76,8 @@ export class MapFragmentTile {
             .style('fill', 'white')
             .text(
                 `${date.getHours().toString().padStart(2, '0')}:` +
-                `${date.getMinutes().toString().padStart(2, '0')}:`+
-                `${date.getSeconds().toString().padStart(2, '0')}.`+
+                `${date.getMinutes().toString().padStart(2, '0')}:` +
+                `${date.getSeconds().toString().padStart(2, '0')}.` +
                 `${date.getMilliseconds().toString().padStart(3, '0')}`
             );
     }

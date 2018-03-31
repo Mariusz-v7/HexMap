@@ -9,7 +9,7 @@ export class Tile {
     private element: BaseType;
     private unsubscribe: any;
 
-    constructor(arcs: number[][]) {
+    constructor(arcs: number[][], private x: number, private y: number) {
         this._arcs = arcs;
     }
 
@@ -32,8 +32,7 @@ export class Tile {
     }
 
     private update(selectedTile: SelectedTile) {
-        //todo: tile coords
-        if (selectedTile.x === 0 && selectedTile.y === 0 && selectedTile.selected) {
+        if (selectedTile.x === this.x && selectedTile.y === this.y && selectedTile.selected) {
             this.selection.classed('selected', true);
         } else {
             this.selection.classed('selected', false);
@@ -65,7 +64,6 @@ export class Tile {
     }
 
     onMouseClick() {
-        //todo: real x, y of a tile
-        store.dispatch(setSelectedTile(0, 0));
+        store.dispatch(setSelectedTile(this.x, this.y));
     }
 }

@@ -8,7 +8,8 @@ export class Topology {
     private _arcs: number[][][] = [];
     private tiles: Tile[] = [];
 
-    constructor(private horizontalAmount: number, private verticalAmount: number) {
+    constructor(private horizontalAmount: number, private verticalAmount: number,
+        private fragmentX: number, private fragmentY: number) {
 
         /**
          * ....... / \
@@ -57,6 +58,10 @@ export class Topology {
 
         for (let x = 0; x < horizontalAmount; ++x) {
             for (let y = 0; y < verticalAmount; ++y) {
+
+                const realX = x + this.fragmentX * horizontalAmount;
+                const realY = y + this.fragmentY * verticalAmount;
+
                 if (y % 2 === 0) {
                     this.tiles.push(new Tile([
                         [
@@ -67,7 +72,7 @@ export class Topology {
                             ~upperEdges[x - 1][y + 1][1],
                             ~upperEdges[x - 1][y][2],
                         ]
-                    ]));
+                    ], realX, realY));
                 } else {
                     this.tiles.push(new Tile([
                         [
@@ -78,7 +83,7 @@ export class Topology {
                             ~upperEdges[x][y + 1][1],
                             ~upperEdges[x - 1][y][2],
                         ]
-                    ]));
+                    ], realX, realY));
                 }
 
             }
