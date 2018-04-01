@@ -24,10 +24,12 @@ export class MapFragmentController {
         const hexWidth = this.computeHexWidth(this.hexSize);
         const hexHeight = this.hexSize * 2;
 
-        this. mapTileWidth = hexWidth * this.hexAmountHorizontal;
+        this.mapTileWidth = hexWidth * this.hexAmountHorizontal;
         this.mapTileHeight = hexHeight * this.hexAmountVertical * 0.75;
 
-        this.generator = new MapFragmentTileGenerator(this.mapTileWidth, this.mapTileHeight, this.width, this.height, this.hexSize);
+        this.generator = new MapFragmentTileGenerator(this.mapTileWidth, this.mapTileHeight,
+            this.width, this.height,
+            this.hexSize, this.hexAmountHorizontal, this.hexAmountVertical);
 
         const zoomDef = zoom()
             .scaleExtent([1, 1])

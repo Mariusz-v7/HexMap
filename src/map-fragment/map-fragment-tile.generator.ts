@@ -12,7 +12,8 @@ export class MapFragmentTileGenerator {
 
     constructor(private tileWidth: number, private tileHeight: number,
         private viewPortWidth: number, private viewPortHeight: number,
-        private hexSize: number) {
+        private hexSize: number,
+        private hexAmountHorizontal: number, private hexAmountVertical: number) {
 
         this.horizontalAmount = Math.ceil(viewPortWidth / tileWidth) + 1;
         this.verticalAmount = Math.ceil(viewPortHeight / tileHeight) + 1;
@@ -52,7 +53,7 @@ export class MapFragmentTileGenerator {
                     return tile;
                 }
 
-                tile.destroy();                
+                tile.destroy();
 
                 return undefined;
             });
@@ -109,14 +110,6 @@ export class MapFragmentTileGenerator {
 
         const isVisible = isTopLeftCornerVisible || isTopRightCornerVisible || isBottomLeftCornerVisible || isBottomRightCornerVisible;
 
-        // if (x === 0 && y === 0) {
-        //     console.log(`
-        //     TL: ${topLeftCorner.x}x${topLeftCorner.y}, 
-        //     TR: ${topRightCorner.x}x${topRightCorner.y},
-        //     BL: ${bottomLeftCorner.x}x${bottomLeftCorner.y},
-        //     BR: ${bottomRightCorner.x}x${bottomRightCorner.y}`);
-        // }
-
         return isVisible;
     }
 
@@ -146,8 +139,7 @@ export class MapFragmentTileGenerator {
 
     private createTile(x: number, y: number): MapFragmentTile {
         return new MapFragmentTile({ x, y }, this.tileWidth, this.tileHeight, this.hexSize,
-            //todo
-            3, 3);
+            this.hexAmountHorizontal, this.hexAmountVertical);
     }
 
     private getExistingTile(x: number, y: number) {

@@ -45,8 +45,8 @@ export class MapFragmentTile {
         this.topology = new Topology(this.hexAmountHorizontal, this.hexAmountVertical, this.x, this.y);
         this.renderer = new Renderer(this.d3Root, this.topology, this.hexSize);
 
-        // this.renderer.render();
-        this.render();
+        this.renderer.render();
+        // this.render();
     }
 
     private render() { // test purposes
@@ -86,6 +86,8 @@ export class MapFragmentTile {
     }
 
     destroy() {
+        this.destroyed = true;
+
         if (this.destroyed) {
             return;
         }
@@ -93,8 +95,6 @@ export class MapFragmentTile {
         if (this.renderer) {
             this.renderer.destroy();
         }
-
-        this.destroyed = true;
 
         if (this.d3Root) {
             this.d3Root.selectAll('*').remove();
