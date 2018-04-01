@@ -3,7 +3,8 @@
 }    
 
 .tile {
-  fill: #fff;
+  /* fill: #fff; */
+  fill: #aaa;
 }
 
 .tile:hover { 

@@ -14,6 +14,7 @@ export class MapFragmentTile {
     private destroyed = false;
     private topology: Topology;
     private renderer: Renderer;
+    private _initialized = false;
 
     constructor(private mapTile: MapTile, private mapTileWidth: number, private mapTileHeight: number,
         private hexSize: number, private hexAmountHorizontal: number, private hexAmountVertical: number) {
@@ -27,10 +28,12 @@ export class MapFragmentTile {
         return this.mapTile.y;
     }
 
+    get initialized() {
+        return this._initialized;
+    }
+
     init(container: BaseType) {
-        if (this.container === container) {
-            return;
-        }
+        this._initialized = true;        
 
         this.container = container;
         this.d3Root = select(this.container);
@@ -42,8 +45,8 @@ export class MapFragmentTile {
         this.topology = new Topology(this.hexAmountHorizontal, this.hexAmountVertical, this.x, this.y);
         this.renderer = new Renderer(this.d3Root, this.topology, this.hexSize);
 
-        this.renderer.render();
-        // this.render();
+        // this.renderer.render();
+        this.render();
     }
 
     private render() { // test purposes
@@ -92,6 +95,10 @@ export class MapFragmentTile {
         }
 
         this.destroyed = true;
+
+        if (this.d3Root) {
+            this.d3Root.selectAll('*').remove();
+        }
     }
 
 }
