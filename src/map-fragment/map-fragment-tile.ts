@@ -33,7 +33,11 @@ export class MapFragmentTile {
     }
 
     init(container: BaseType) {
-        this._initialized = true;        
+        if (this.initialized) {
+            throw new Error('Tile is already initialized');
+        }
+
+        this._initialized = true;
 
         this.container = container;
         this.d3Root = select(this.container);
@@ -86,6 +90,10 @@ export class MapFragmentTile {
     }
 
     destroy() {
+        if (this.destroyed) {
+            throw new Error('Tile is already destroyed');
+        }
+
         this.destroyed = true;
 
         if (this.destroyed) {
