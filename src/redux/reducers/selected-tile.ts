@@ -1,5 +1,5 @@
-import { SelectTileAction } from "../actions/select-tile";
-import { ActionType } from "../actions/types";
+import { SelectTileAction } from '../actions/select-tile';
+import { ActionType } from '../actions/types';
 
 export interface SelectedTile {
     x?: number;

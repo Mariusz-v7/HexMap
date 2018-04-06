@@ -7,6 +7,7 @@ import { Selection, BaseType } from 'd3-selection';
 import { MapTile } from './map-tile';
 import { Topology } from '../hex/topology';
 import { Renderer } from '../hex/renderer';
+import { store } from '../redux/store';
 
 export class MapFragmentTile {
     private d3Root: Selection<BaseType, any, any, any>;
@@ -41,6 +42,11 @@ export class MapFragmentTile {
 
         this.container = container;
         this.d3Root = select(this.container);
+
+        if (store.getState().debug) {
+            this.d3Root.attr('debug-x', this.x);
+            this.d3Root.attr('debug-y', this.y);
+        }
 
         if (this.renderer) {
             this.renderer.destroy();

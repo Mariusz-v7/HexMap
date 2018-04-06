@@ -27,6 +27,11 @@ export class Tile {
         this.selection = select(element);
         this.selection.attr('class', 'tile');
 
+        if (store.getState().debug) {
+            this.selection.attr('debug-x', this.x);
+            this.selection.attr('debug-y', this.y);
+        }
+
         const state = store.getState().selectedTile;
         this.update(state);
     }
@@ -63,7 +68,7 @@ export class Tile {
     }
 
     onMouseClick() {
-       if (this.selection.classed('selected')) {
+        if (this.selection.classed('selected')) {
             store.dispatch(clearSelectedTile());
         } else {
             store.dispatch(setSelectedTile(this.x, this.y));

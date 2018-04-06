@@ -1,3 +1,4 @@
 export enum ActionType {
-    SELECT_TILE = 'SELECT_TILE'
+    ENABLE_DEBUG = 'ENABLE_DEBUG',
+    SELECT_TILE = 'SELECT_TILE',
 }
