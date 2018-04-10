@@ -4,7 +4,7 @@ import { geoMercator, geoPath } from 'd3-geo';
 import { json } from 'd3'
 
 import { Selection, BaseType } from 'd3-selection';
-import { MapTile } from './map-tile';
+import { Coordinate } from '../coordinate';
 import { Topology } from '../hex/topology';
 import { Renderer } from '../hex/renderer';
 import { store } from '../redux/store';
@@ -17,7 +17,7 @@ export class MapFragmentTile {
     private renderer: Renderer;
     private _initialized = false;
 
-    constructor(private mapTile: MapTile, private mapTileWidth: number, private mapTileHeight: number,
+    constructor(private mapTile: Coordinate, private mapTileWidth: number, private mapTileHeight: number,
         private hexSize: number, private hexAmountHorizontal: number, private hexAmountVertical: number) {
     }
 

@@ -1,7 +1,7 @@
 import { MapFragmentTile } from './map-fragment-tile';
 import { Selection, BaseType, select, event } from 'd3-selection';
 import { zoom } from 'd3-zoom';
-import { MapTile } from './map-tile';
+import { Coordinate } from '../coordinate';
 import { MapFragmentTileGenerator } from './map-fragment-tile.generator';
 
 export class MapFragmentController {
