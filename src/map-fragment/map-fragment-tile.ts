@@ -46,6 +46,7 @@ export class MapFragmentTile {
         if (store.getState().debug) {
             this.d3Root.attr('debug-x', this.x);
             this.d3Root.attr('debug-y', this.y);
+            this.d3Root.attr('destroyed', 'false');
         }
 
         if (this.renderer) {
@@ -102,12 +103,12 @@ export class MapFragmentTile {
 
         this.destroyed = true;
 
-        if (this.destroyed) {
-            return;
-        }
-
         if (this.renderer) {
             this.renderer.destroy();
+        }
+
+        if (store.getState().debug) {
+            this.d3Root.attr('destroyed', 'true')
         }
 
         if (this.d3Root) {
