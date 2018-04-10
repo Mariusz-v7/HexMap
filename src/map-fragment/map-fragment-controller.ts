@@ -7,19 +7,21 @@ import { MapFragmentTileGenerator } from './map-fragment-tile.generator';
 export class MapFragmentController {
     private d3Root: Selection<HTMLElement, any, any, any>;
     private svg: Selection<BaseType, any, any, any>;
+    private mainContainer: Selection<BaseType, any, any, any>;
     private mapTileWidth: number;
     private mapTileHeight: number;
     private hexSize = 20;
     private hexAmountHorizontal = 5;
     private hexAmountVertical = 5;
-    private width = 0;
-    private height = 0;
+    private viewPortWidth = 0;
+    private viewPortHeight = 0;
     private generator: MapFragmentTileGenerator;
+    private backgroundSizeExtension = 1;
 
     constructor(private container: HTMLElement) {
         this.d3Root = select(this.container);
-        this.width = this.container.clientWidth;
-        this.height = this.container.clientHeight;
+        this.viewPortWidth = this.container.clientWidth;
+        this.viewPortHeight = this.container.clientHeight;
 
         const hexWidth = this.computeHexWidth(this.hexSize);
         const hexHeight = this.hexSize * 2;
@@ -27,8 +29,13 @@ export class MapFragmentController {
         this.mapTileWidth = hexWidth * this.hexAmountHorizontal;
         this.mapTileHeight = hexHeight * this.hexAmountVertical * 0.75;
 
+        const backgroundSize = {
+            width: this.viewPortWidth + this.backgroundSizeExtension * 2 * this.mapTileWidth,
+            height: this.viewPortHeight + this.backgroundSizeExtension * 2 * this.mapTileHeight
+        };
+
         this.generator = new MapFragmentTileGenerator(this.mapTileWidth, this.mapTileHeight,
-            this.width, this.height,
+            backgroundSize.width, backgroundSize.height,
             this.hexSize, this.hexAmountHorizontal, this.hexAmountVertical);
 
         const zoomDef = zoom()
@@ -38,9 +45,15 @@ export class MapFragmentController {
             });
 
         this.svg = this.d3Root.append('svg')
-            .attr('width', this.width)
-            .attr('height', this.height)
+            .attr('width', this.viewPortWidth)
+            .attr('height', this.viewPortHeight)
             .call(zoomDef);
+
+        this.mainContainer = this.svg.append('g');
+        this.mainContainer.attr(
+            'transform',
+            `translate(-${this.mapTileWidth * this.backgroundSizeExtension}, -${this.mapTileHeight * this.backgroundSizeExtension})`
+        );
 
         this.render(this.generator.generate({ x: 0, y: 0 }));
     }
@@ -50,7 +63,7 @@ export class MapFragmentController {
     }
 
     private render(fragments: MapFragmentTile[] = []) {
-        const tiles = this.svg.selectAll('g')
+        const tiles = this.mainContainer.selectAll('g')
             .data(fragments);
 
         tiles.each(function (d) {
