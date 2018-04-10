@@ -31,10 +31,10 @@ export class Renderer {
                 tile.init(this);
             });
 
-        path.merge(path)
-            .each(function (tile) {
-                tile.init(this);
-            });
+        // path.merge(path)
+        //     .each(function (tile) {
+        //         tile.init(this);
+            // });
     }
 
     destroy() {
