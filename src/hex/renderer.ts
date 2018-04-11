@@ -5,6 +5,7 @@ import { Feature } from 'geojson';
 import { HexProjection } from './hex-projection';
 import { Topology } from './topology';
 import { Tile } from './tile';
+import { mesh } from 'topojson';
 
 export class Renderer {
     private path: GeoPath<any, any>;
@@ -14,27 +15,8 @@ export class Renderer {
     }
 
     render() {
-        const path = this.viewport.selectAll('path')
-            .data(this.topology.objects.tiles.geometries);
-
-        // path.exit()
-        //     .remove();
-
-        path.enter()
-            .append('path')
-            .attr('d', this.calculatePath)
-            .on('mouseover', tile => tile.onMouseEnter())
-            .on('mousemove', tile => tile.onMouseMove())
-            .on('mouseout', tile => tile.onMouseLeave())
-            .on('click', tile => tile.onMouseClick())
-            .each(function (tile) {
-                tile.init(this);
-            });
-
-        // path.merge(path)
-        //     .each(function (tile) {
-        //         tile.init(this);
-            // });
+        this.renderTiles();
+        this.renderMesh();
     }
 
     destroy() {
@@ -44,15 +26,33 @@ export class Renderer {
             ;
     }
 
+    private renderTiles() {
+        this.viewport.selectAll('path')
+            .data(this.topology.objects.tiles.geometries)
+            .enter()
+            .append('path')
+            .attr('d', this.calculatePath)
+            .on('mouseover', tile => tile.onMouseEnter())
+            .on('mousemove', tile => tile.onMouseMove())
+            .on('mouseout', tile => tile.onMouseLeave())
+            .on('click', tile => tile.onMouseClick())
+            .each(function (tile) {
+                tile.init(this);
+            });
+    }
+
+    private renderMesh() {
+        const meshResult = mesh(this.topology, this.topology.objects.tiles);
+
+        this.viewport.append("path")
+            .datum(meshResult)
+            .attr("class", "mesh")
+            .attr("d", this.path);
+    }
+
     private calculatePath = (tile: Tile) => {
-        const conversion: any = feature(this.topology, tile);
+        const geoJsonFeature = feature(this.topology, tile);
 
-        const geoJsonFeature: Feature<any, any> = {
-            geometry: conversion.geometry,
-            properties: conversion.properties,
-            type: 'Feature'
-        };
-
-        return this.path(geoJsonFeature, tile);
+        return this.path(geoJsonFeature);
     }
 }

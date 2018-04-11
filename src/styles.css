@@ -14,3 +14,10 @@
 .tile.selected {
   fill: #8f8;
 }
+
+.mesh {
+  fill: none;
+  stroke: #000;
+  stroke-opacity: 5px;
+  pointer-events: none;
+}
