@@ -44,10 +44,11 @@ export class Renderer {
     private renderMesh() {
         const meshResult = mesh(this.topology, this.topology.objects.tiles);
 
-        this.viewport.append("path")
+        this.viewport.append('path')
             .datum(meshResult)
-            .attr("class", "mesh")
-            .attr("d", this.path);
+            .attr('class', 'mesh')
+            .attr('fill', 'none')
+            .attr('d', this.path);
     }
 
     private calculatePath = (tile: Tile) => {

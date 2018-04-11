@@ -16,8 +16,8 @@
 }
 
 .mesh {
-  fill: none;
   stroke: #000;
-  stroke-opacity: 5px;
+  stroke-opacity: 1;
+  stroke-width: 1px;
   pointer-events: none;
 }
